@@ -12,6 +12,7 @@ ProjectID=$3
 
 if [[ $# -ne 3 ]];then
     echo "Not 3 parameters given"
+    exit 1
 fi
 
 # Setup
