@@ -1,4 +1,4 @@
 token
 emails
 gitlab-runner-config
-pipeline-utils/python-portainer/venv
+pipeline-utilities/python-portainer/venv
