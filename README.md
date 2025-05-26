@@ -1,3 +1,4 @@
-# devops-doe24
+# Devops DOE24
+Contains some small exercies, and the entire CI/CD structure for the Chas Challenge project. The project was a dotnet product, deployed on a portainer instance. 
 
-All current projects on closed git repository, will be moved here when finished. Working in GitLab CI.
+See [pipeline-utils](pipeline-utils/) for all resources related tot he CC project.

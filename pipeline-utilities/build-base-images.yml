@@ -1,0 +1,50 @@
+# This pipeline only exists to generate base images on a new MR when someone only pushes changes to
+# one part of the program. To prevent missing imagetags not being generated
+include:
+- local: pipeline-utilities/variables.yml
+- local: pipeline-utilities/templates.yml
+
+stages:
+- check
+- build
+
+# Uses docker manifest to check if specific tag for an image exists
+# Triggers all build jobs on failure, else fails and quits back to main pipeline
+check-docker-images:
+  extends: .build-template
+  image: docker:latest
+  stage: check
+  script:
+  - echo "Checking if dockerimages have already been built"
+  # Dont have to check all tags, if one is missing all are missing
+  - |
+    if docker manifest inspect $CI_REGISTRY_IMAGE/dotnet:$DOCKER_TAG; then
+      echo "Images exist, dont build"
+      exit 0
+    else
+      echo "Images do not exist, running build jobs"
+      exit 1
+    fi
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
+
+# Generate and publish a new Dockerimage of our .NET-application
+build-dotnet-image:
+  extends: .build-dotnet
+  when: on_failure
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
+
+# Generate and publish a new Dockerimage of our React-application
+build-react-image:
+  extends: .build-react
+  when: on_failure
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
+
+# Generates an image of MSSQL and loads specified state from SQL file
+build-db-image:
+  extends: .build-db
+  when: on_failure
+  rules:
+  - if: $CI_PIPELINE_SOURCE == "parent_pipeline"
